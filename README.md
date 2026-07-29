@@ -4,6 +4,7 @@ Website for the young adult sangha of the New York Insight Meditation Center.
 
 Single-page static site (`index.html`), deployed to GitHub Pages via GitHub Actions on every push to `main`.
 
+
 ## Local preview
 
 Just open `index.html` in a browser, or serve the directory:
