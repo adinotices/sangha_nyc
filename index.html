@@ -11,6 +11,12 @@
 <meta property="og:title" content="sangha.nyc — Young Adult Sangha · New York Insight" />
 <meta property="og:description" content="Come back to the breath. Weekly meditation for young adults in NYC, in the Insight tradition." />
 
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -54,9 +60,8 @@
   header.nav{position:sticky;top:0;z-index:50;background:rgba(242,239,228,.8);
     backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px;}
-  .brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;}
-  .brand .mark{font-family:var(--font-display);font-weight:400;font-size:23px;color:var(--ink);letter-spacing:-.01em;}
-  .brand .mark .d{color:var(--moss);}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+  .brand .logo{height:40px;width:40px;display:block;}
   .brand .sub{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600;display:none;}
   @media(min-width:900px){.brand .sub{display:inline;}}
   nav.links{display:none;gap:30px;align-items:center;}
@@ -213,7 +218,7 @@
 <header class="nav">
   <div class="wrap nav-inner">
     <a class="brand" href="#top">
-      <span class="mark">sangha<span class="d">.</span>nyc</span>
+      <img class="logo" src="assets/logo.png" alt="sangha.nyc" />
       <span class="sub">Young Adult Sangha of New York Insight</span>
     </a>
     <nav class="links">
