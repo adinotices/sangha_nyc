@@ -77,8 +77,8 @@
     -webkit-font-smoothing:antialiased;overflow-x:hidden;
     transition:background-color .35s ease, color .35s ease;
   }
-  body, header.nav, .when-card, .notice, .panel, .contact-card, .faq details,
-  .event, .date-chip, .subscribe input, .station .node{
+  body, header.nav, .when-card, .panel, .contact-card, .faq details,
+  .event, .date-chip, .subscribe input{
     transition:background-color .35s ease, border-color .35s ease, color .35s ease;
   }
   a{color:inherit;}
@@ -151,31 +151,11 @@
   hr.rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);border:0;margin:0;}
 
   /* FORMAT */
-  .fmt-lead{display:grid;gap:34px;grid-template-columns:1fr;align-items:start;margin-bottom:60px;}
-  @media(min-width:860px){.fmt-lead{grid-template-columns:1.05fr .95fr;gap:56px;}}
-  .notice{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--moss);
-    border-radius:12px;padding:20px 22px;font-size:16.5px;color:var(--body);}
-  .notice b{color:var(--ink);font-family:var(--font-display);font-weight:400;font-size:1.05em;}
   .when-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;}
   .when-card .row{display:flex;justify-content:space-between;gap:18px;padding:12px 0;border-bottom:1px solid var(--line);}
   .when-card .row:last-child{border-bottom:0;}
   .when-card .k{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:600;padding-top:3px;}
   .when-card .v{text-align:right;font-family:var(--font-display);font-size:17px;color:var(--ink);}
-
-  .path-title{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--moss-deep);font-weight:600;margin-bottom:34px;}
-  .stations{position:relative;margin:0;padding:0;list-style:none;}
-  .stations::before{content:"";position:absolute;left:13px;top:8px;bottom:8px;width:1.5px;
-    background:linear-gradient(180deg, rgba(127,154,114,.15), rgba(127,154,114,.5), rgba(127,154,114,.15));}
-  .station{position:relative;padding:0 0 32px 54px;}
-  .station:last-child{padding-bottom:0;}
-  .station .node{position:absolute;left:5px;top:3px;width:18px;height:18px;border-radius:50%;
-    background:var(--paper);border:1.5px solid var(--line);transition:border-color .5s ease, box-shadow .5s ease, background .5s ease;}
-  .station.lit .node{border-color:var(--moss);background:radial-gradient(circle,#fff,var(--moss));
-    box-shadow:0 0 0 4px rgba(127,154,114,.14);}
-  .station .num{font-size:11px;color:var(--faint);letter-spacing:.1em;font-weight:600;}
-  .station h4{font-family:var(--font-display);font-size:20px;font-weight:400;color:var(--ink);margin:1px 0 4px;}
-  .station h4 .dur{font-family:var(--font-ui);font-size:11px;color:var(--gold-deep);letter-spacing:.05em;margin-left:8px;font-weight:600;}
-  .station p{margin:0;font-size:16px;color:var(--body);line-height:1.5;}
 
   /* EVENTS */
   .free-note{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--moss-deep);font-weight:500;margin-bottom:34px;}
@@ -317,53 +297,13 @@
     <div class="section-head reveal">
       <span class="eyebrow">The Sit</span>
       <h2>We practice together weekly.</h2>
-      <p>If you've never meditated a day in your life, this is a good place to start. Nothing to prepare, nothing to prove.</p>
     </div>
 
-    <div class="fmt-lead">
-      <div class="reveal">
-        <div class="notice">
-          <b>New here?</b> Just show up — or send a note first if you'd rather know a face before you walk in. You don't need to sign up, pay, or know anything about Buddhism to come sit with us.
-        </div>
-        <p style="margin-top:22px;">We keep it simple and unpretentious: a little quiet, a short teaching, a real sit, and time to actually talk to each other afterward. The point isn't to perform serenity — it's to practice honestly, in good company, and head back out into the city a little more awake.</p>
-      </div>
-      <div class="when-card reveal">
-        <div class="row"><span class="k">Day</span><span class="v"><span class="placeholder">e.g. Tuesdays</span></span></div>
-        <div class="row"><span class="k">Time</span><span class="v"><span class="placeholder">e.g. 7:00–8:45 PM</span></span></div>
-        <div class="row"><span class="k">Where</span><span class="v">New York Insight <span class="placeholder">confirm room</span></span></div>
-        <div class="row"><span class="k">Cost</span><span class="v">Free · dāna</span></div>
-        <div class="row"><span class="k">Bring</span><span class="v">Just yourself</span></div>
-      </div>
-    </div>
-
-    <div class="reveal">
-      <div class="path-title">✦ The shape of an evening</div>
-      <ol class="stations" id="stations">
-        <li class="station"><div class="node"></div><div class="num">01</div>
-          <h4>Arrive &amp; settle <span class="dur">~5 min</span></h4>
-          <p>Come in, find a cushion or a chair, and drop into a few minutes of silence to let the day fall away.</p></li>
-        <li class="station"><div class="node"></div><div class="num">02</div>
-          <h4>Welcome &amp; check-in <span class="dur">~10 min</span></h4>
-          <p>Quick introductions and a chance to name how you're actually arriving — no need to have it together.</p></li>
-        <li class="station"><div class="node"></div><div class="num">03</div>
-          <h4>Guided meditation &amp; instruction <span class="dur">~15 min</span></h4>
-          <p>A short guided practice with instruction, so newer and seasoned sitters alike have something to work with.</p></li>
-        <li class="station"><div class="node"></div><div class="num">04</div>
-          <h4>Silent sit <span class="dur">~25 min</span></h4>
-          <p>The heart of the evening. We meditate together in silence — the thing that's genuinely hard to do alone.</p></li>
-        <li class="station"><div class="node"></div><div class="num">05</div>
-          <h4>Dharma &amp; reflection <span class="dur">~15 min</span></h4>
-          <p>A brief talk or a passage on practice, ethics, and everyday life — then space to sit with what it stirs up.</p></li>
-        <li class="station"><div class="node"></div><div class="num">06</div>
-          <h4>Small-group sharing <span class="dur">~15 min</span></h4>
-          <p>We break into pairs or small groups to talk honestly about practice, the reading, or whatever's alive for you.</p></li>
-        <li class="station"><div class="node"></div><div class="num">07</div>
-          <h4>Closing mettā <span class="dur">~5 min</span></h4>
-          <p>We end with a loving-kindness meditation — for ourselves, for each other, for the city outside.</p></li>
-        <li class="station"><div class="node"></div><div class="num">08</div>
-          <h4>Hang out <span class="dur">optional</span></h4>
-          <p>Tea, snacks, and unhurried conversation. For a lot of people, this is where the sangha actually happens.</p></li>
-      </ol>
+    <div class="when-card reveal" style="max-width:420px;margin:0 auto 60px;">
+      <div class="row"><span class="k">Day</span><span class="v">Sundays</span></div>
+      <div class="row"><span class="k">Time</span><span class="v">6:30–8:30 PM</span></div>
+      <div class="row"><span class="k">Where</span><span class="v"><a href="https://www.google.com/maps/search/?api=1&query=New+York+Insight+Meditation+Center+115+West+29th+St+New+York+NY" target="_blank" rel="noopener">New York Insight</a> or a community member's home in the East Village or West Village</span></div>
+      <div class="row"><span class="k">Cost</span><span class="v">Free</span></div>
     </div>
   </div>
 </section>
@@ -376,7 +316,7 @@
       <h2>Upcoming events</h2>
       <p>Beyond the weekly sit — retreats, shared meals, and sober gatherings. Everyone is welcome.</p>
     </div>
-    <div class="free-note reveal"><span class="seed"></span> Everything here is free or donation-based (dāna).</div>
+    <div class="free-note reveal"><span class="seed"></span> Everything here is free or donation-based.</div>
 
     <div class="events">
       <div class="event reveal">
@@ -524,12 +464,6 @@
     es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
   },{threshold:.12, rootMargin:"0px 0px -40px 0px"});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-  // gently light the format nodes as they enter
-  const so = new IntersectionObserver((es)=>{
-    es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('lit'); });
-  },{threshold:.6, rootMargin:"0px 0px -20% 0px"});
-  document.querySelectorAll('.station').forEach(s=>so.observe(s));
 
   // subscribe form: placeholder behavior until wired to Substack
   const form = document.getElementById('subform');
