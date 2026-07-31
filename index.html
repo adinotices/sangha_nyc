@@ -291,6 +291,8 @@
   /* EVENTS */
   .free-note{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--moss-deep);font-weight:500;margin-bottom:34px;}
   .events{display:grid;gap:16px;}
+  /* display:flex/grid would otherwise beat the [hidden] attribute */
+  .free-note[hidden],.events[hidden]{display:none;}
   .event{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;
     background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;
     transition:transform .16s ease, border-color .2s ease;}
@@ -303,6 +305,10 @@
   .event .body p{margin:0 0 8px;font-size:15.5px;color:var(--body);line-height:1.5;}
   .event .body .when{font-size:13px;color:var(--faint);display:flex;gap:16px;flex-wrap:wrap;}
   .event .body .when b{color:var(--body);font-weight:500;}
+  .events-empty{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    padding:40px 28px;text-align:center;}
+  .events-empty p{margin:0 auto 22px;font-size:17px;color:var(--body);max-width:44ch;}
+  .events-empty[hidden]{display:none;}
 
   /* UPDATES */
   .panel{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);
@@ -358,6 +364,10 @@
   .reveal.in{opacity:1;transform:none;}
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}}
 </style>
+<noscript>
+  <!-- Without JS the reveal animation never fires, so show everything up front. -->
+  <style>.reveal{opacity:1;transform:none;}</style>
+</noscript>
 </head>
 <body>
 
@@ -455,8 +465,10 @@
     </div>
     <div class="free-note reveal"><span class="seed" aria-hidden="true"></span> Everything here is free.</div>
 
-    <div class="events">
-      <div class="event reveal">
+    <!-- Each event carries data-expires="YYYY-MM-DD" (New York time). On and after
+         that date the event is removed and, if none remain, the empty state shows. -->
+    <div class="events" id="eventsList">
+      <article class="event reveal" data-expires="2026-08-16">
         <div class="date-chip"><div class="mo">AUG</div><div class="dy">15</div></div>
         <div class="body">
           <h3>Open Mic Night + Vegan/Vegetarian Potluck</h3>
@@ -464,7 +476,12 @@
           <div class="when"><span><b>Time</b> 6:30 PM</span><span><b>Where</b> <a href="https://www.google.com/maps/search/?api=1&query=New+York+Insight+Meditation+Center+115+West+29th+St+New+York+NY" target="_blank" rel="noopener">NY Insight</a></span></div>
           <a class="btn" href="https://partiful.com/e/gFbpdSDrkkUmDxQ19srC?c=5mAVamaN" target="_blank" rel="noopener" style="margin-top:16px;display:inline-block;">RSVP</a>
         </div>
-      </div>
+      </article>
+    </div>
+
+    <div class="events-empty reveal" id="eventsEmpty" hidden>
+      <p>No upcoming events, but our weekly sits are still happening, so please join us for that.</p>
+      <a class="btn" href="#updates">Come to a Sit</a>
     </div>
   </div>
 </section>
@@ -580,6 +597,65 @@
       hamburgerBtn.focus();
     }
   });
+
+  // upcoming events: drop anything past its expiry (New York time), then show
+  // the empty state if nothing is left. Runs before the reveal observer below
+  // so the empty state still fades in like everything else.
+  (function(){
+    const list = document.getElementById('eventsList');
+    const empty = document.getElementById('eventsEmpty');
+    if(!list || !empty) return;
+
+    // Today's date as YYYY-MM-DD in New York, so an event ends on NYC's clock
+    // rather than the visitor's (someone in Tokyo shouldn't lose it a day early).
+    function todayInNY(){
+      try{
+        return new Intl.DateTimeFormat('en-CA', {
+          timeZone:'America/New_York', year:'numeric', month:'2-digit', day:'2-digit'
+        }).format(new Date());
+      }catch(e){
+        const d = new Date();
+        const pad = n => String(n).padStart(2,'0');
+        return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+      }
+    }
+
+    const today = todayInNY();
+    const expired = [];
+    list.querySelectorAll('[data-expires]').forEach(el=>{
+      // ISO dates compare correctly as plain strings
+      if(el.dataset.expires <= today){
+        expired.push(el.querySelector('h3') ? el.querySelector('h3').textContent.trim() : '');
+        el.remove();
+      }
+    });
+
+    const remaining = list.querySelectorAll('.event').length;
+    if(remaining === 0){
+      list.hidden = true;
+      empty.hidden = false;
+      // "Everything here is free." refers to the event list, so retire it too
+      const freeNote = document.querySelector('#events .free-note');
+      if(freeNote) freeNote.hidden = true;
+    }
+
+    // Keep structured data honest: strip expired events from the JSON-LD so
+    // crawlers don't index an event that has already happened.
+    if(expired.length){
+      const tag = document.querySelector('script[type="application/ld+json"]');
+      if(tag){
+        try{
+          const data = JSON.parse(tag.textContent);
+          if(Array.isArray(data['@graph'])){
+            data['@graph'] = data['@graph'].filter(node =>
+              !(node['@type'] === 'Event' && expired.includes((node.name||'').trim()))
+            );
+            tag.textContent = JSON.stringify(data);
+          }
+        }catch(e){ /* leave the markup untouched if anything looks off */ }
+      }
+    }
+  })();
 
   // reveal on scroll
   const io = new IntersectionObserver((es)=>{
