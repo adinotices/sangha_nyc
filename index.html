@@ -116,6 +116,26 @@
     background:var(--moss);color:#f4f6ee;font-weight:600;transition:transform .15s ease, box-shadow .2s ease;border:0;cursor:pointer;}
   .btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(127,154,114,.35);}
 
+  .hamburger{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+    width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;cursor:pointer;
+    transition:border-color .2s ease;}
+  .hamburger:hover{border-color:var(--moss);}
+  .hamburger span{display:block;width:16px;height:1.5px;background:var(--ink);transition:transform .25s ease, opacity .25s ease;}
+  .hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+  @media(min-width:800px){.hamburger{display:none;}}
+
+  .mobile-menu{position:absolute;top:100%;left:0;right:0;background:var(--card);
+    border-bottom:1px solid var(--line);max-height:0;overflow:hidden;
+    transition:max-height .3s ease, background-color .35s ease, border-color .35s ease;}
+  .mobile-menu.open{max-height:360px;}
+  .mobile-menu .wrap{display:flex;flex-direction:column;padding:6px 26px 18px;}
+  .mobile-menu a{padding:14px 0;font-size:15px;text-decoration:none;color:var(--body);border-bottom:1px solid var(--line);}
+  .mobile-menu a:last-child{border-bottom:0;}
+  .mobile-menu a:hover{color:var(--moss-deep);}
+  @media(min-width:800px){.mobile-menu{display:none;}}
+
   /* HERO with breathing circle */
   .hero{position:relative;overflow:hidden;padding:96px 0 104px;text-align:center;}
   .breath{position:absolute;top:50%;left:50%;width:min(560px,86vw);height:min(560px,86vw);
@@ -256,6 +276,9 @@
       <a href="#contact">Contact</a>
     </nav>
     <div class="nav-right">
+      <button class="hamburger" id="hamburgerBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="4"/>
@@ -267,6 +290,15 @@
       </button>
       <a class="btn" href="#updates">Come to a Sit</a>
     </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <nav class="wrap">
+      <a href="#format">The Sit</a>
+      <a href="#events">Events</a>
+      <a href="#faq">FAQ</a>
+      <a href="#updates">Updates</a>
+      <a href="#contact">Contact</a>
+    </nav>
   </div>
 </header>
 
@@ -300,7 +332,7 @@
     <div class="when-card reveal" style="max-width:420px;margin:0 auto 60px;">
       <div class="row"><span class="k">Day</span><span class="v">Sundays</span></div>
       <div class="row"><span class="k">Time</span><span class="v">6:30–8:30 PM</span></div>
-      <div class="row"><span class="k">Where</span><span class="v"><a href="https://www.google.com/maps/search/?api=1&query=New+York+Insight+Meditation+Center+115+West+29th+St+New+York+NY" target="_blank" rel="noopener">New York Insight</a> or a member's home (East/West Village)</span></div>
+      <div class="row"><span class="k">Where</span><span class="v"><a href="https://www.google.com/maps/search/?api=1&query=New+York+Insight+Meditation+Center+115+West+29th+St+New+York+NY" target="_blank" rel="noopener">New York Insight</a> or a member's home (usually in the East or West Village)</span></div>
     </div>
   </div>
 </section>
@@ -429,6 +461,24 @@
 </footer>
 
 <script>
+  // mobile nav: hamburger toggle
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  function closeMobileMenu(){
+    mobileMenu.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+  }
+  hamburgerBtn.addEventListener('click', ()=>{
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburgerBtn.classList.toggle('open', isOpen);
+    hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+  });
+  mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click', closeMobileMenu));
+  document.addEventListener('click', (ev)=>{
+    if(!ev.target.closest('header.nav')) closeMobileMenu();
+  });
+
   // reveal on scroll
   const io = new IntersectionObserver((es)=>{
     es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
