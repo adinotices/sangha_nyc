@@ -6,18 +6,27 @@
 <script>
   (function(){
     var KEY = 'sangha-theme';
-    var h = new Date().getHours();
-    var isNight = h >= 19 || h < 7;
     var saved = null;
     try { saved = localStorage.getItem(KEY); } catch(e){}
-    document.documentElement.setAttribute('data-theme', saved || (isNight ? 'dark' : 'light'));
+    var theme = saved;
+    if(!theme){
+      // A system-level dark preference is a deliberate accessibility choice
+      // (eye strain, light sensitivity), so it wins outright. Only when the
+      // system has no opinion do we fall back to the local clock.
+      var osDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var h = new Date().getHours();
+      theme = (osDark || h >= 19 || h < 7) ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', theme);
   })();
 </script>
 <title>Young Adult Sangha of New York Insight</title>
 <meta name="description" content="A meditation community in Manhattan for young adults. We sit together Sundays, 6:30–8:30 PM, in the Insight tradition of New York Insight. Free, and all experience levels welcome." />
 <link rel="canonical" href="https://sangha.nyc/" />
-<meta name="theme-color" content="#f2efe4" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#171b10" media="(prefers-color-scheme: dark)" />
+<!-- Kept in sync with the active theme by JS below. The theme follows the clock as
+     well as the OS, so a prefers-color-scheme media query here would disagree with
+     what is actually on screen. Without JS the page stays light, matching this value. -->
+<meta name="theme-color" content="#f2efe4" id="themeColor" />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Young Adult Sangha of New York Insight" />
@@ -39,9 +48,12 @@
 <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet" />
+<!-- Fonts are self-hosted (see assets/fonts/). This drops two third-party
+     connections and the render-blocking stylesheet Google Fonts injects, and
+     keeps visitors' requests off Google's servers. -->
+<link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="assets/fonts/newsreader-italic.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin />
 
 <script type="application/ld+json">
 {
@@ -59,6 +71,15 @@
       "email": "hello@sangha.nyc",
       "telephone": "+1-864-633-0782",
       "areaServed": "New York City",
+      "sameAs": ["https://sanghanyc.substack.com/"],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "115 West 29th Street, 12th Floor",
+        "addressLocality": "New York",
+        "addressRegion": "NY",
+        "postalCode": "10001",
+        "addressCountry": "US"
+      },
       "parentOrganization": {
         "@type": "Organization",
         "name": "New York Insight Meditation Center",
@@ -75,7 +96,8 @@
     {
       "@type": "Event",
       "name": "Open Mic Night + Vegan/Vegetarian Potluck",
-      "startDate": "2026-08-15T18:30",
+      "startDate": "2026-08-15T18:30:00-04:00",
+      "endDate": "2026-08-15T20:30:00-04:00",
       "eventStatus": "https://schema.org/EventScheduled",
       "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
       "description": "Bring a dish to share and/or a song, poem, or story to perform — an evening of good food and open mic.",
@@ -128,6 +150,29 @@
 </script>
 
 <style>
+  /* Subset from the Google Fonts originals: Latin only, weight axis trimmed to the
+     weights actually used, optical-size axis kept (Newsreader is set from 12.5px to
+     72px here, and opsz is what keeps the big hero type refined). Each family is
+     split so the accented-Latin file only downloads if a character needs it. */
+  @font-face{font-family:Newsreader;font-style:normal;font-weight:300 500;font-display:swap;
+    src:url(assets/fonts/newsreader.woff2) format('woff2');
+    unicode-range:U+0020-007E,U+00A0,U+2013-2014,U+2018-2019,U+201C-201D,U+2026;}
+  @font-face{font-family:Newsreader;font-style:normal;font-weight:300 500;font-display:swap;
+    src:url(assets/fonts/newsreader-ext.woff2) format('woff2');
+    unicode-range:U+00A1-00FF,U+2010-2012,U+2015,U+201A-201B,U+201E-201F,U+2030,U+2032-2033,U+2039-203A,U+20AC,U+2122,U+2212;}
+  @font-face{font-family:Newsreader;font-style:italic;font-weight:300 400;font-display:swap;
+    src:url(assets/fonts/newsreader-italic.woff2) format('woff2');
+    unicode-range:U+0020-007E,U+00A0,U+2013-2014,U+2018-2019,U+201C-201D,U+2026;}
+  @font-face{font-family:Newsreader;font-style:italic;font-weight:300 400;font-display:swap;
+    src:url(assets/fonts/newsreader-italic-ext.woff2) format('woff2');
+    unicode-range:U+00A1-00FF,U+2010-2012,U+2015,U+201A-201B,U+201E-201F,U+2030,U+2032-2033,U+2039-203A,U+20AC,U+2122,U+2212;}
+  @font-face{font-family:Figtree;font-style:normal;font-weight:400 600;font-display:swap;
+    src:url(assets/fonts/figtree.woff2) format('woff2');
+    unicode-range:U+0020-007E,U+00A0,U+2013-2014,U+2018-2019,U+201C-201D,U+2026;}
+  @font-face{font-family:Figtree;font-style:normal;font-weight:400 600;font-display:swap;
+    src:url(assets/fonts/figtree-ext.woff2) format('woff2');
+    unicode-range:U+00A1-00FF,U+2010-2012,U+2015,U+201A-201B,U+201E-201F,U+2030,U+2032-2033,U+2039-203A,U+20AC,U+2122,U+2212;}
+
   :root{
     --paper:#f2efe4;      /* warm light ground */
     --paper-2:#ebe6d7;    /* alternating section */
@@ -171,7 +216,8 @@
     color-scheme:dark;
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  /* Smooth scrolling can trigger nausea for people with vestibular disorders */
+  @media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth;}}
   body{
     margin:0;background:var(--paper);color:var(--body);
     font-family:var(--font-ui);font-size:18px;line-height:1.62;font-weight:400;
@@ -193,7 +239,7 @@
     backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px;gap:14px;}
   .nav-right{display:flex;align-items:center;gap:14px;}
-  .theme-toggle{flex:none;display:flex;align-items:center;justify-content:center;width:38px;height:38px;
+  .theme-toggle{flex:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;
     border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;
     transition:border-color .2s ease, color .2s ease;}
   .theme-toggle:hover{border-color:var(--moss);color:var(--moss-deep);}
@@ -224,7 +270,7 @@
   @media(prefers-reduced-motion:reduce){.btn:hover{transform:none;}}
 
   .hamburger{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
-    width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;cursor:pointer;
+    width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:transparent;cursor:pointer;
     transition:border-color .2s ease;}
   .hamburger:hover{border-color:var(--moss);}
   .hamburger span{display:block;width:16px;height:1.5px;background:var(--ink);transition:transform .25s ease, opacity .25s ease;}
@@ -297,10 +343,10 @@
     background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;
     transition:transform .16s ease, border-color .2s ease;}
   .event:hover{transform:translateY(-2px);border-color:rgba(127,154,114,.45);}
-  .date-chip{text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:12px;
+  .date-chip{display:block;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:12px;
     padding:12px 14px;min-width:74px;}
-  .date-chip .mo{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;}
-  .date-chip .dy{font-family:var(--font-display);font-size:28px;color:var(--ink);line-height:1;margin-top:3px;}
+  .date-chip .mo{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;}
+  .date-chip .dy{display:block;font-family:var(--font-display);font-size:28px;color:var(--ink);line-height:1;margin-top:3px;}
   .event .body h3{font-family:var(--font-display);font-size:21px;font-weight:400;margin-bottom:5px;}
   .event .body p{margin:0 0 8px;font-size:15.5px;color:var(--body);line-height:1.5;}
   .event .body .when{font-size:13px;color:var(--faint);display:flex;gap:16px;flex-wrap:wrap;}
@@ -318,6 +364,9 @@
   .panel .inner{position:relative;z-index:2;}
   .panel h2{font-size:clamp(28px,4vw,40px);margin-bottom:12px;}
   .panel p{color:var(--body);font-size:18px;max-width:44ch;margin:0 auto 28px;}
+  /* content blockers routinely strip the Substack iframe, so keep a plain link */
+  .panel .fallback{font-size:13.5px;color:var(--faint);margin:18px auto 0;max-width:44ch;}
+  .panel .fallback a{color:var(--moss-deep);}
 
   /* CONTACT */
   .contact-grid{display:grid;gap:18px;grid-template-columns:1fr;}
@@ -394,7 +443,7 @@
       <button class="hamburger" id="hamburgerBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
         <span></span><span></span><span></span>
       </button>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Dark mode" aria-pressed="false">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="4"/>
           <path d="M12 2v2.2M12 19.8V22M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2 12h2.2M19.8 12H22M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/>
@@ -407,7 +456,7 @@
     </div>
   </div>
   <div class="mobile-menu" id="mobileMenu">
-    <nav class="wrap" aria-label="Mobile">
+    <nav class="wrap" aria-label="Primary">
       <a href="#format">The Sit</a>
       <a href="#events">Events</a>
       <a href="#faq">FAQ</a>
@@ -469,7 +518,7 @@
          that date the event is removed and, if none remain, the empty state shows. -->
     <div class="events" id="eventsList">
       <article class="event reveal" data-expires="2026-08-16">
-        <div class="date-chip"><div class="mo">AUG</div><div class="dy">15</div></div>
+        <time class="date-chip" datetime="2026-08-15"><span class="mo">Aug</span><span class="dy">15</span></time>
         <div class="body">
           <h3>Open Mic Night + Vegan/Vegetarian Potluck</h3>
           <p>Bring a dish to share and/or a song, poem, or story to perform — an evening of good food and open mic.</p>
@@ -525,6 +574,8 @@
                 loading="lazy" width="100%" height="150"
                 style="border:1px solid var(--line);border-radius:16px;background:var(--paper);max-width:440px;"
                 frameborder="0" scrolling="no"></iframe>
+
+        <p class="fallback">Form not loading? <a href="https://sanghanyc.substack.com/subscribe" target="_blank" rel="noopener">Subscribe on Substack</a> instead.</p>
       </div>
     </div>
   </div>
@@ -663,11 +714,14 @@
   },{threshold:.12, rootMargin:"0px 0px -40px 0px"});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-  // dark mode: manual toggle + time-of-day auto-switching
+  // dark mode: manual toggle, OS preference, and time-of-day auto-switching
   (function(){
     const KEY = 'sangha-theme';
     const root = document.documentElement;
     const toggle = document.getElementById('themeToggle');
+    const meta = document.getElementById('themeColor');
+    const BG = { light:'#f2efe4', dark:'#171b10' };
+    const osDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
     function isNight(){
       const h = new Date().getHours();
@@ -676,9 +730,18 @@
     function hasExplicitPreference(){
       try { return !!localStorage.getItem(KEY); } catch(e){ return false; }
     }
+    // Mirrors the decision made by the inline script in <head>
+    function autoTheme(){
+      return ((osDark && osDark.matches) || isNight()) ? 'dark' : 'light';
+    }
     function apply(theme){
       root.setAttribute('data-theme', theme);
+      // the browser chrome should match what's actually rendered
+      if(meta) meta.setAttribute('content', BG[theme]);
+      toggle.setAttribute('aria-pressed', String(theme === 'dark'));
     }
+
+    apply(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
 
     toggle.addEventListener('click', ()=>{
       const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -686,10 +749,13 @@
       apply(next);
     });
 
-    // if the user hasn't manually chosen, keep following the clock
+    // until the visitor picks a side themselves, keep following the OS and the clock
+    if(osDark && osDark.addEventListener){
+      osDark.addEventListener('change', ()=>{ if(!hasExplicitPreference()) apply(autoTheme()); });
+    }
     setInterval(()=>{
       if(hasExplicitPreference()) return;
-      apply(isNight() ? 'dark' : 'light');
+      apply(autoTheme());
     }, 5 * 60 * 1000);
   })();
 </script>
