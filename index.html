@@ -55,6 +55,13 @@
 <link rel="preload" href="assets/fonts/newsreader-italic.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin />
 
+<!-- Every time on this site is New York time.
+     JSON (unlike HTML) takes no comments, so the note lives here: Event startDate
+     and endDate must carry an explicit offset, or crawlers read them as their own
+     local time. New York is -04:00 on daylight time (second Sunday in March to
+     first Sunday in November) and -05:00 the rest of the year, so a December event
+     is NOT -04:00. The times shown in the page body are New York time too, and are
+     left unlabelled on purpose -- this is a Manhattan sangha meeting in person. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

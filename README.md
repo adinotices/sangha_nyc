@@ -38,6 +38,17 @@ never linger. When no events remain, the "no upcoming events" panel takes over.
 Adding an event means adding the `<article class="event">` block **and** a matching
 `Event` node in the JSON-LD near the top of the file.
 
+**All times on the site are New York time.** They're left unlabelled in the page
+body on purpose — this is a Manhattan sangha meeting in person. The JSON-LD is the
+one place that needs to be explicit: `startDate` and `endDate` must carry an offset,
+or crawlers read them as their own local time. New York is `-04:00` on daylight time
+(second Sunday in March through the first Sunday in November) and `-05:00` the rest
+of the year, so a winter event is **not** `-04:00`.
+
+`data-expires` is a plain date and needs no offset — the expiry script resolves
+"today" through `America/New_York`, so an event drops off on New York's midnight
+regardless of where the visitor is.
+
 
 ## Fonts
 
