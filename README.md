@@ -19,14 +19,36 @@ python3 -m http.server 8000
 ## Layout
 
 ```
-index.html            the whole site: markup, styles and scripts in one file
-404.html              branded not-found page, served by GitHub Pages
-assets/fonts/         self-hosted webfont subsets (see below)
-assets/               logo, favicons, social share image
-robots.txt            crawler rules
-sitemap.xml           bump <lastmod> when the content changes meaningfully
-tools/build-fonts.py  regenerates assets/fonts/
+index.html                  the whole site: markup, styles and scripts in one file
+404.html                    branded not-found page, served by GitHub Pages
+assets/fonts/               self-hosted webfont subsets (see below)
+assets/logo.svg             master art -- not served, but generated images come from it
+assets/social-card.png      the link-preview image
+assets/                     logo, favicons
+robots.txt                  crawler rules
+sitemap.xml                 bump <lastmod> when the content changes meaningfully
+tools/build-fonts.py        regenerates assets/fonts/
+tools/build-social-card.py  regenerates assets/social-card.png
 ```
+
+
+## Link previews
+
+`assets/social-card.png` is what WhatsApp, iMessage, Slack and the rest show. Note
+that WhatsApp letterboxes the whole 1200x630 image into a small square thumbnail —
+about 100x53 real pixels — so the card is deliberately built to fill the frame with
+just the lotus and the name. Restating the title or description there is wasted
+effort, since those are already printed beside the thumbnail.
+
+Regenerate it with:
+
+```
+python3 tools/build-social-card.py
+```
+
+**Previews are cached per image URL.** If you change the card, give it a new
+filename and update `og:image`, `twitter:image` and the two JSON-LD `image` fields
+to match — otherwise the old thumbnail can stick around for a long time.
 
 
 ## Editing the events section
